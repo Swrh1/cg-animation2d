@@ -12,6 +12,11 @@ class Renderer {
         this.fps = fps;
         this.start_time = null;
         this.prev_time = null;
+
+        this.square = [Vector3(100, 100, 1),
+                       Vector3(300, 100, 1),
+                       Vector3(300, 300, 1),
+                       Vector3(100, 300, 1)];
     }
 
     // flag:  bool
@@ -109,10 +114,6 @@ class Renderer {
     drawSlide1() {
         // TODO: draw at least 3 polygons that spin about their own centers
         //   - have each polygon spin at a different speed / direction
-        let square = [Vector3(100, 100, 1),
-                      Vector3(300, 100, 1),
-                      Vector3(300, 300, 1),
-                      Vector3(100, 300, 1)];
         //this.drawConvexPolygon(square, [255, 0, 0, 255]);
         
         let square_origin = new Matrix(3, 3);
@@ -124,10 +125,10 @@ class Renderer {
         let mult1 = Matrix.multiply([square_return, square_rotate]);
         let mult2 = Matrix.multiply([mult1, square_origin]);
         for(let i = 0; i < square.length; i++) {
-            square[i] = Matrix.multiply([mult2, square[i]]);
+            this.square[i] = Matrix.multiply([mult2, this.square[i]]);
         }
-        console.log(square);
-        this.drawConvexPolygon(square, [255, 0, 0, 255]);
+        console.log(this.square);
+        this.drawConvexPolygon(this.square, [255, 0, 0, 255]);
     }
 
     //
