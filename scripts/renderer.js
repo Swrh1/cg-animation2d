@@ -17,6 +17,12 @@ class Renderer {
                        Vector3(300, 100, 1),
                        Vector3(300, 300, 1),
                        Vector3(100, 300, 1)];
+        this.ball = [
+            Vector3(400, 150, 1),
+            Vector3(500, 300, 1),
+            Vector3(400, 450, 1),
+            Vector3(300, 300, 1)
+        ];
     }
 
     // flag:  bool
@@ -100,14 +106,29 @@ class Renderer {
         
         // Following line is example of drawing a single polygon
         // (this should be removed/edited after you implement the slide)
+        
+        let direction = {x: 10, y: 10};
+
         let diamond = [
             Vector3(400, 150, 1),
             Vector3(500, 300, 1),
             Vector3(400, 450, 1),
             Vector3(300, 300, 1)
         ];
+
         let teal = [0, 128, 128, 255];
-        this.drawConvexPolygon(diamond, teal);
+
+        //vec3.values = [x, y, w];
+
+        this.ball.forEach(async (element) => {
+            element.values[0] += direction.x;
+            element.values[1] += direction.y;
+            console.log(element.values[0]);
+          });
+
+        //console.log(this.ball);
+
+        //this.drawConvexPolygon(diamond, teal);
     }
 
     //
