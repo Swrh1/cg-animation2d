@@ -94,6 +94,7 @@ class Renderer {
     //
     updateTransforms(time, delta_time) {
         // TODO: update any transformations needed for animation
+        
     }
     
     //
@@ -164,7 +165,7 @@ class Renderer {
         // TODO: draw at least 3 polygons that spin about their own centers
         //   - have each polygon spin at a different speed / direction
         //this.drawConvexPolygon(square, [255, 0, 0, 255]);
-        
+        let teal = [0, 128, 128, 255];
         let square_origin = new Matrix(3, 3);
         mat3x3Translate(square_origin, -200, -200);
         let square_rotate = new Matrix(3, 3);
@@ -173,11 +174,11 @@ class Renderer {
         mat3x3Translate(square_return, 200, 200);
         let mult1 = Matrix.multiply([square_return, square_rotate]);
         let mult2 = Matrix.multiply([mult1, square_origin]);
-        for(let i = 0; i < square.length; i++) {
+        for(let i = 0; i < this.square.length; i++) {
             this.square[i] = Matrix.multiply([mult2, this.square[i]]);
         }
         console.log(this.square);
-        this.drawConvexPolygon(this.square, [255, 0, 0, 255]);
+        this.drawConvexPolygon(this.square, teal);
     }
 
     //
