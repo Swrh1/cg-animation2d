@@ -17,12 +17,29 @@ class Renderer {
                        Vector3(300, 100, 1),
                        Vector3(300, 300, 1),
                        Vector3(100, 300, 1)];
-        this.ball = [
-            Vector3(400, 150, 1),
-            Vector3(500, 300, 1),
-            Vector3(400, 450, 1),
-            Vector3(300, 300, 1)
-        ];
+        
+        this.ballDirection = {x: 10, y: 10};
+        this.ball = [];
+        this.createBall(this.ball);
+
+    }
+
+    //This helper function creates a ball
+    createBall(list)
+    {
+        let center = {x: this.canvas.width/2, y: this.canvas.height/2};
+        let numPoints = 20;
+        let increment = 2*Math.PI/numPoints;
+        let xpos,ypos;
+        let r = 50;
+        let i = 0;
+        while(i<2*Math.PI)
+        {
+            xpos = Math.round(r*Math.cos(i) + center.x);
+            ypos = Math.round(r*Math.sin(i) + center.y);
+            list.push(Vector3(xpos,ypos,1));
+            i += increment;
+        }
     }
 
     // flag:  bool
@@ -107,28 +124,39 @@ class Renderer {
         // Following line is example of drawing a single polygon
         // (this should be removed/edited after you implement the slide)
         
-        let direction = {x: 10, y: 10};
-
-        let diamond = [
-            Vector3(400, 150, 1),
-            Vector3(500, 300, 1),
-            Vector3(400, 450, 1),
-            Vector3(300, 300, 1)
-        ];
-
+        //Set teal color code
         let teal = [0, 128, 128, 255];
 
-        //vec3.values = [x, y, w];
+        //Create translation matrix to use
+        let translate = new Matrix(3, 3);
 
-        this.ball.forEach(async (element) => {
-            element.values[0] += direction.x;
-            element.values[1] += direction.y;
-            console.log(element.values[0]);
-          });
+        //Set up translation matrix
+        mat3x3Translate(translate, this.ballDirection.x, this.ballDirection.y);
+        let polySize = this.ball.length;
+        let i;
+        //Transform the all points
+        for (i = 0; i < polySize; i++)
+        {
+            this.ball[i] = Matrix.multiply([translate, this.ball[i]]);
+        }
 
-        //console.log(this.ball);
+        for (i = 0; i < polySize; i++)
+        {
+            //Bounce off top/bottom
+            if (this.ball[i].values[1] <= 0 || this.ball[i].values[1] >= this.canvas.height)
+            {
+                this.ballDirection.y = this.ballDirection.y * -1;
+            }
 
-        //this.drawConvexPolygon(diamond, teal);
+            //Bounce off sides
+            if (this.ball[i].values[0] <= 0 || this.ball[i].values[0] >= this.canvas.width)
+            {
+                this.ballDirection.x = this.ballDirection.x * -1;
+            }
+        }
+
+        //Draw the ball
+        this.drawConvexPolygon(this.ball, teal);
     }
 
     //
