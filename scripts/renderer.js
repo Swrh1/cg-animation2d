@@ -18,8 +18,9 @@ class Renderer {
                        Vector3(300, 300, 1),
                        Vector3(100, 300, 1)];
         
-        this.ballDirection = {x: 10, y: 10};
+        this.ballVelocity = {x: 1, y: 1};
         this.ball = [];
+        this.slide0transform = new Matrix(3, 3);
         this.createBall(this.ball);
 
     }
@@ -94,7 +95,12 @@ class Renderer {
     //
     updateTransforms(time, delta_time) {
         // TODO: update any transformations needed for animation
+<<<<<<< HEAD
 
+=======
+        //Set up translation matrix for slide 0
+        mat3x3Translate(this.slide0transform, this.ballVelocity.x*delta_time, this.ballVelocity.y*delta_time);
+>>>>>>> b3c3113397f38c7f6ce777fbf06a72570f318e10
     }
     
     //
@@ -127,11 +133,15 @@ class Renderer {
         //Set teal color code
         let teal = [0, 128, 128, 255];
 
+        /*
         //Create translation matrix to use
         let translate = new Matrix(3, 3);
 
         //Set up translation matrix
-        mat3x3Translate(translate, this.ballDirection.x, this.ballDirection.y);
+        mat3x3Translate(translate, this.ballVelocity.x, this.ballVelocity.y);
+        */
+        
+        let translate = this.slide0transform;
         let polySize = this.ball.length;
         let i;
         //Transform the all points
@@ -145,19 +155,18 @@ class Renderer {
             //Bounce off top/bottom
             if (this.ball[i].values[1] <= 0 || this.ball[i].values[1] >= this.canvas.height)
             {
-                this.ballDirection.y = this.ballDirection.y * -1;
+                this.ballVelocity.y = this.ballVelocity.y * -1;
             }
 
             //Bounce off sides
             if (this.ball[i].values[0] <= 0 || this.ball[i].values[0] >= this.canvas.width)
             {
-                this.ballDirection.x = this.ballDirection.x * -1;
+                this.ballVelocity.x = this.ballVelocity.x * -1;
             }
         }
 
         //Draw the ball
         this.drawConvexPolygon(this.ball, teal);
-
     }
 
     //
