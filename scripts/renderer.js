@@ -95,12 +95,9 @@ class Renderer {
     //
     updateTransforms(time, delta_time) {
         // TODO: update any transformations needed for animation
-<<<<<<< HEAD
 
-=======
         //Set up translation matrix for slide 0
         mat3x3Translate(this.slide0transform, this.ballVelocity.x*delta_time, this.ballVelocity.y*delta_time);
->>>>>>> b3c3113397f38c7f6ce777fbf06a72570f318e10
     }
     
     //
@@ -149,24 +146,58 @@ class Renderer {
         {
             this.ball[i] = Matrix.multiply([translate, this.ball[i]]);
         }
-
+        let xdisp, ydisp, xt,yt;
         for (i = 0; i < polySize; i++)
         {
-            //Bounce off top/bottom
-            if (this.ball[i].values[1] <= 0 || this.ball[i].values[1] >= this.canvas.height)
-            {
-                this.ballVelocity.y = this.ballVelocity.y * -1;
-            }
-
+            xt = 0;
+            yt = 0;
+            xdisp = this.ball[i].values[0];
             //Bounce off sides
-            if (this.ball[i].values[0] <= 0 || this.ball[i].values[0] >= this.canvas.width)
+            if (xdisp <= 0 || xdisp >= this.canvas.width)
             {
+                //invert the x velocity
                 this.ballVelocity.x = this.ballVelocity.x * -1;
+                if (xdisp < 0)
+                {
+                    xt = -xdisp*2;
+                }
+                else if (xdisp > this.canvas.width)
+                {
+                    xt = -(xdisp - this.canvas.width)*2;
+                }
             }
+            ydisp = this.ball[i].values[1];
+            //Bounce off top/bottom
+            if (ydisp <= 0 || ydisp >= this.canvas.height)
+            {
+                //invert the y velocity
+                this.ballVelocity.y = this.ballVelocity.y * -1;
+                if (ydisp < 0)
+                {
+                    yt = -ydisp*2;
+                }
+                else if (ydisp > this.canvas.height)
+                {
+                    yt = -(ydisp - this.canvas.height)*2;
+                }
+            }
+            this.moveBall(xt,yt);
         }
-
         //Draw the ball
         this.drawConvexPolygon(this.ball, teal);
+    }
+
+    //Helper function translates the ball with x and y offsets, used for correcting out of bounds ball
+    moveBall(x,y)
+    {
+        let polySize = this.ball.length;
+        let i;
+        let t = new Matrix(3, 3);
+        mat3x3Translate(t, x, y);
+        for (i = 0; i < polySize; i++)
+        {
+            this.ball[i] = Matrix.multiply([t, this.ball[i]]);
+        }
     }
 
     //
