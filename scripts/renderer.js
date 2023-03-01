@@ -120,7 +120,6 @@ class Renderer {
     drawSlide0() {
         // TODO: draw bouncing ball (circle that changes direction whenever it hits an edge)
         
-        
         // Following line is example of drawing a single polygon
         // (this should be removed/edited after you implement the slide)
         
@@ -157,6 +156,7 @@ class Renderer {
 
         //Draw the ball
         this.drawConvexPolygon(this.ball, teal);
+
     }
 
     //
