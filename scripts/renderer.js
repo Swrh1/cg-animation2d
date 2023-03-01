@@ -95,12 +95,9 @@ class Renderer {
     //
     updateTransforms(time, delta_time) {
         // TODO: update any transformations needed for animation
-<<<<<<< HEAD
 
-=======
         //Set up translation matrix for slide 0
         mat3x3Translate(this.slide0transform, this.ballVelocity.x*delta_time, this.ballVelocity.y*delta_time);
->>>>>>> b3c3113397f38c7f6ce777fbf06a72570f318e10
     }
     
     //
