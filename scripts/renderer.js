@@ -31,6 +31,13 @@ class Renderer {
         this.slide0transform = new Matrix(3, 3);
         this.createBall(this.ball);
 
+        this.funVelocity = {x: 1, y: 1};
+        this.fun = [Vector3(400, 300),
+                    Vector3(600, 300),
+                    Vector3(600, 500),
+                    Vector3(500, 600),
+                    Vector3(400, 500)];
+        this.slide3transform = new Matrix(3, 3);
     }
 
     //This helper function creates a ball
@@ -106,8 +113,13 @@ class Renderer {
 
         //Set up translation matrix for slide 0
         mat3x3Translate(this.slide0transform, this.ballVelocity.x*delta_time, this.ballVelocity.y*delta_time);
+        //Set up rotate matrix for slide 1
         mat3x3Rotate(this.square_rotate, 10*(delta_time/100));
         mat3x3Rotate(this.pentagon_rotate, 20*(delta_time/100));
+        //Slide 2
+
+        //Slide 3
+        mat3x3Translate(this.slide3transform, this.funVelocity.x*delta_time, this.funVelocity.y*delta_time);
 
     }
     
@@ -267,7 +279,88 @@ class Renderer {
         //   - animation should involve all three basic transformation types
         //     (translation, scaling, and rotation)
         
+        //Set teal color code
+        let teal = [0, 128, 128, 255];
+
+        /*
+        //Create translation matrix to use
+        let translate = new Matrix(3, 3);
+
+        //Set up translation matrix
+        mat3x3Translate(translate, this.ballVelocity.x, this.ballVelocity.y);
+        */
         
+        let translate = this.slide3transform;
+        let polySize = this.fun.length;
+        let i;
+        //Transform the all points
+        for (i = 0; i < polySize; i++)
+        {
+            this.fun[i] = Matrix.multiply([translate, this.fun[i]]);
+        }
+        let xdisp, ydisp, xt,yt;
+        for (i = 0; i < polySize; i++)
+        {
+            xt = 0;
+            yt = 0;
+            xdisp = this.fun[i].values[0];
+            //Bounce off sides
+            if (xdisp <= 0 || xdisp >= this.canvas.width)
+            {
+                //invert the x velocity
+                this.funVelocity.x = this.funVelocity.x * -1;
+                if (xdisp < 0)
+                {
+                    xt = -xdisp*2;
+                }
+                else if (xdisp > this.canvas.width)
+                {
+                    xt = -(xdisp - this.canvas.width)*2;
+                }
+            }
+            ydisp = this.fun[i].values[1];
+            //Bounce off top/bottom
+            if (ydisp <= 0 || ydisp >= this.canvas.height)
+            {
+                //invert the y velocity
+                this.funVelocity.y = this.funVelocity.y * -1;
+                if (ydisp < 0)
+                {
+                    yt = -ydisp*2;
+                }
+                else if (ydisp > this.canvas.height)
+                {
+                    yt = -(ydisp - this.canvas.height)*2;
+                }
+            }
+            this.movefun(xt,yt);
+        }
+        //Draw the ball
+        this.drawConvexPolygon(this.fun, teal);
+    }
+
+    movefun(x,y)
+    {
+        let polySize = this.fun.length;
+        let i;
+        let t = new Matrix(3, 3);
+        mat3x3Translate(t, x, y);
+        for (i = 0; i < polySize; i++)
+        {
+            this.fun[i] = Matrix.multiply([t, this.fun[i]]);
+        }
+    }
+
+    movefun(x,y)
+    {
+        let polySize = this.fun.length;
+        let i;
+        let t = new Matrix(3, 3);
+        mat3x3Translate(t, x, y);
+        for (i = 0; i < polySize; i++)
+        {
+            this.fun[i] = Matrix.multiply([t, this.fun[i]]);
+        }
     }
     
     // vertex_list:  array of object [Matrix(3, 1), Matrix(3, 1), ..., Matrix(3, 1)]
