@@ -17,6 +17,9 @@ class Renderer {
                        Vector3(300, 100, 1),
                        Vector3(300, 300, 1),
                        Vector3(100, 300, 1)];
+        let square_origin = new Matrix(3, 3);
+        let square_rotate = new Matrix(3, 3);
+        let square_return = new Matrix(3, 3);
         
         this.ballVelocity = {x: 1, y: 1};
         this.ball = [];
@@ -165,7 +168,6 @@ class Renderer {
         //Draw the ball
         this.drawConvexPolygon(this.ball, teal);
     }
-
     //
     drawSlide1() {
         // TODO: draw at least 3 polygons that spin about their own centers
@@ -174,12 +176,10 @@ class Renderer {
         //console.log("hello");
         
         let teal = [0, 128, 128, 255];  
-        let square_origin = new Matrix(3, 3);
-        mat3x3Translate(square_origin, -200, -200);
-        let square_rotate = new Matrix(3, 3);
-        mat3x3Rotate(square_rotate, 15);
-        let square_return = new Matrix(3, 3);
-        mat3x3Translate(square_return, 200, 200);
+        mat3x3Translate(this.square_origin, -200, -200);
+    
+        mat3x3Rotate(this.square_rotate, 15);
+        mat3x3Translate(this.square_return, 200, 200);
         let mult1 = Matrix.multiply([square_return, square_rotate]);
         let mult2 = Matrix.multiply([mult1, square_origin]);
         for(let i = 0; i < this.square.length; i++) {
