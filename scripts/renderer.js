@@ -22,7 +22,7 @@ class Renderer {
         this.pentagon = [Vector3(400, 300),
                          Vector3(600, 300),
                          Vector3(600, 500),
-                         Vector3(500, 600),
+                         Vector3(500, 550),
                          Vector3(400, 500)];
         this.pentagon_rotate = new Matrix(3, 3);
 
@@ -107,7 +107,7 @@ class Renderer {
         //Set up translation matrix for slide 0
         mat3x3Translate(this.slide0transform, this.ballVelocity.x*delta_time, this.ballVelocity.y*delta_time);
         mat3x3Rotate(this.square_rotate, 10*(delta_time/100));
-        mat3x3Rotate(this.pentagon_rotate, 20*(delta_time/100));
+        //mat3x3Rotate(this.pentagon_rotate, 20*(delta_time/100));
 
     }
     
@@ -220,7 +220,9 @@ class Renderer {
         
         let teal = [0, 128, 128, 255];
         let red = [255, 0, 0, 255];
-        //this.drawConvexPolygon(this.pentagon, red);
+        
+        this.drawConvexPolygon(this.pentagon, red);
+        
         let square_origin = new Matrix(3, 3);
         let square_return = new Matrix(3, 3);
         let square_mult1 = new Matrix(3, 3);
@@ -232,6 +234,7 @@ class Renderer {
         for(let i = 0; i < this.square.length; i++) {
             this.square[i] = Matrix.multiply([square_mult2, this.square[i]]);
         }
+        
         this.drawConvexPolygon(this.square, teal);
         /*
         let pentagon_origin = new Matrix(3, 3);
