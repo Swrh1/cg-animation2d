@@ -21,6 +21,15 @@ class Renderer {
         let square_rotate = new Matrix(3, 3);
         let square_return = new Matrix(3, 3);
         
+        this.square_rotate = new Matrix(3, 3);
+
+        this.pentagon = [Vector3(400, 300),
+                         Vector3(600, 300),
+                         Vector3(600, 500),
+                         Vector3(500, 600),
+                         Vector3(400, 500)];
+        this.pentagon_rotate = new Matrix(3, 3);
+
         this.ballVelocity = {x: 1, y: 1};
         this.ball = [];
         this.slide0transform = new Matrix(3, 3);
@@ -101,6 +110,9 @@ class Renderer {
 
         //Set up translation matrix for slide 0
         mat3x3Translate(this.slide0transform, this.ballVelocity.x*delta_time, this.ballVelocity.y*delta_time);
+        mat3x3Rotate(this.square_rotate, 10*(delta_time/100));
+        mat3x3Rotate(this.pentagon_rotate, 20*(delta_time/100));
+
     }
     
     //
@@ -149,25 +161,60 @@ class Renderer {
         {
             this.ball[i] = Matrix.multiply([translate, this.ball[i]]);
         }
-
+        let xdisp, ydisp, xt,yt;
         for (i = 0; i < polySize; i++)
         {
-            //Bounce off top/bottom
-            if (this.ball[i].values[1] <= 0 || this.ball[i].values[1] >= this.canvas.height)
-            {
-                this.ballVelocity.y = this.ballVelocity.y * -1;
-            }
-
+            xt = 0;
+            yt = 0;
+            xdisp = this.ball[i].values[0];
             //Bounce off sides
-            if (this.ball[i].values[0] <= 0 || this.ball[i].values[0] >= this.canvas.width)
+            if (xdisp <= 0 || xdisp >= this.canvas.width)
             {
+                //invert the x velocity
                 this.ballVelocity.x = this.ballVelocity.x * -1;
+                if (xdisp < 0)
+                {
+                    xt = -xdisp*2;
+                }
+                else if (xdisp > this.canvas.width)
+                {
+                    xt = -(xdisp - this.canvas.width)*2;
+                }
             }
+            ydisp = this.ball[i].values[1];
+            //Bounce off top/bottom
+            if (ydisp <= 0 || ydisp >= this.canvas.height)
+            {
+                //invert the y velocity
+                this.ballVelocity.y = this.ballVelocity.y * -1;
+                if (ydisp < 0)
+                {
+                    yt = -ydisp*2;
+                }
+                else if (ydisp > this.canvas.height)
+                {
+                    yt = -(ydisp - this.canvas.height)*2;
+                }
+            }
+            this.moveBall(xt,yt);
         }
-
         //Draw the ball
         this.drawConvexPolygon(this.ball, teal);
     }
+
+    //Helper function translates the ball with x and y offsets, used for correcting out of bounds ball
+    moveBall(x,y)
+    {
+        let polySize = this.ball.length;
+        let i;
+        let t = new Matrix(3, 3);
+        mat3x3Translate(t, x, y);
+        for (i = 0; i < polySize; i++)
+        {
+            this.ball[i] = Matrix.multiply([t, this.ball[i]]);
+        }
+    }
+
     //
     drawSlide1() {
         // TODO: draw at least 3 polygons that spin about their own centers
@@ -176,22 +223,34 @@ class Renderer {
         //console.log("hello");
         
         let teal = [0, 128, 128, 255];  
-        mat3x3Translate(this.square_origin, -200, -200);
-    
-        mat3x3Rotate(this.square_rotate, 15);
-        mat3x3Translate(this.square_return, 200, 200);
-        let mult1 = Matrix.multiply([square_return, square_rotate]);
-        let mult2 = Matrix.multiply([mult1, square_origin]);
+        //let red = [255, 0, 0, 255];
+        //this.drawConvexPolygon(this.pentagon, red);
+        let square_origin = new Matrix(3, 3);
+        let square_return = new Matrix(3, 3);
+        let square_mult1 = new Matrix(3, 3);
+        let square_mult2 = new Matrix(3, 3);  
+        mat3x3Translate(square_return, 200, 200);
+        mat3x3Translate(square_origin, -200, -200);
+        square_mult1 = Matrix.multiply([square_return, this.square_rotate]);
+        square_mult2 = Matrix.multiply([square_mult1, square_origin]);
         for(let i = 0; i < this.square.length; i++) {
-            this.square[i] = Matrix.multiply([mult2, this.square[i]]);
+            this.square[i] = Matrix.multiply([square_mult2, this.square[i]]);
         }
-        console.log(square_origin);
-        console.log(square_rotate);
-        console.log(square_return);
-        console.log(mult1);
-        console.log(mult2);
-        //console.log(this.square);
         this.drawConvexPolygon(this.square, teal);
+        /*
+        let pentagon_origin = new Matrix(3, 3);
+        let pentagon_return = new Matrix(3, 3);
+        let pentagon_mult1 = new Matrix(3, 3);
+        let pentagon_mult2 = new Matrix(3, 3);  
+        mat3x3Translate(pentagon_return, 500, 450);
+        mat3x3Translate(pentagon_origin, -500, -450);
+        pentagon_mult1 = Matrix.multiply([pentagon_return, this.pentagon_rotate]);
+        pentagon_mult2 = Matrix.multiply([pentagon_mult1, pentagon_origin]);
+        for(let j = 0; j < this.pentagon.length; j++) {
+            this.pentagon[j] = Matrix.multiply([pentagon_mult2, this.pentagon[j]]);
+        }
+        this.drawConvexPolygon(this.pentagon, red);
+        */
         
         
         
