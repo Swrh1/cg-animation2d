@@ -44,12 +44,13 @@ class Renderer {
         this.createBall(this.ball);
 
         this.funVelocity = {x: 1, y: 1};
-        this.fun = [Vector3(400, 300),
-                    Vector3(600, 300),
-                    Vector3(600, 500),
-                    Vector3(500, 600),
-                    Vector3(400, 500)];
+        this.fun = [Vector3(400, 300, 1),
+            Vector3(500, 300, 1),
+            Vector3(500, 350, 1),
+            Vector3(450, 400, 1),
+            Vector3(400, 350, 1)];
         this.slide3transform = new Matrix(3, 3);
+        this.slide3rotate = new Matrix(3,3);
     }
 
     //This helper function creates a ball
@@ -133,10 +134,8 @@ class Renderer {
         //Slide 2
 
         //Slide 3
+        mat3x3Rotate(this.slide3rotate, 10*(delta_time/100));
         mat3x3Translate(this.slide3transform, this.funVelocity.x*delta_time, this.funVelocity.y*delta_time);
-        
-
-
     }
     
     //
@@ -314,12 +313,26 @@ class Renderer {
         let teal = [0, 128, 128, 255];
 
         /*
-        //Create translation matrix to use
-        let translate = new Matrix(3, 3);
-
-        //Set up translation matrix
-        mat3x3Translate(translate, this.ballVelocity.x, this.ballVelocity.y);
+        this.fun = [Vector3(400, 300, 1),
+            Vector3(500, 300, 1),
+            Vector3(500, 350, 1),
+            Vector3(450, 400, 1),
+            Vector3(400, 350, 1)];
         */
+        
+        let fun_origin = new Matrix(3, 3);
+        let fun_return = new Matrix(3, 3);
+        let fun_mult1 = new Matrix(3, 3);
+        let fun_mult2 = new Matrix(3, 3);
+        xcenter = 
+        ycenter = 
+        mat3x3Translate(fun_return, 650, 200);
+        mat3x3Translate(fun_origin, -650, -200);
+        fun_mult1 = Matrix.multiply([fun_return, this.slide3rotate]);
+        fun_mult2 = Matrix.multiply([fun_mult1, fun_origin]);
+        for(let j = 0; j < this.fun.length; j++) {
+            this.fun[j] = Matrix.multiply([fun_mult2, this.fun[j]]);
+        }
         
         let translate = this.slide3transform;
         let polySize = this.fun.length;
@@ -366,20 +379,8 @@ class Renderer {
             }
             this.movefun(xt,yt);
         }
-        //Draw the ball
-        this.drawConvexPolygon(this.fun, teal);
-    }
 
-    movefun(x,y)
-    {
-        let polySize = this.fun.length;
-        let i;
-        let t = new Matrix(3, 3);
-        mat3x3Translate(t, x, y);
-        for (i = 0; i < polySize; i++)
-        {
-            this.fun[i] = Matrix.multiply([t, this.fun[i]]);
-        }
+        this.drawConvexPolygon(this.fun, teal);
     }
 
     movefun(x,y)
