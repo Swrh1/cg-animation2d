@@ -17,20 +17,51 @@ class Renderer {
                        Vector3(300, 100, 1),
                        Vector3(300, 300, 1),
                        Vector3(100, 300, 1)];
-        this.square_rotate = new Matrix(3, 3);
 
         this.pentagon = [Vector3(400, 300),
                          Vector3(600, 300),
                          Vector3(600, 500),
                          Vector3(500, 550),
                          Vector3(400, 500)];
+        
+        this.square_rotate = new Matrix(3, 3);
+        
+        this.pentagon = [Vector3(400, 300, 1),
+                         Vector3(500, 300, 1),
+                         Vector3(500, 350, 1),
+                         Vector3(450, 400, 1),
+                         Vector3(400, 350, 1)];
+                           
         this.pentagon_rotate = new Matrix(3, 3);
+
+        this.hexagon = [Vector3(600, 100, 1),
+                        Vector3(700, 100, 1),
+                        Vector3(750, 200, 1),
+                        Vector3(700, 300, 1),
+                        Vector3(600, 300, 1),
+                        Vector3(550, 200, 1)];
+
+        this.hexagon_rotate = new Matrix(3, 3);
+
+        this.triangle = [Vector3(300, 200, 1),
+                         Vector3(500, 200, 1),
+                         Vector3(400, 300, 1)];
+        this.triangle_scale = new Matrix(3, 3);
+        this.scalar = 1.2;
 
         this.ballVelocity = {x: 1, y: 1};
         this.ball = [];
         this.slide0transform = new Matrix(3, 3);
         this.createBall(this.ball);
 
+        this.funVelocity = {x: 1, y: 1};
+        this.fun = [Vector3(400, 300, 1),
+            Vector3(500, 300, 1),
+            Vector3(500, 350, 1),
+            Vector3(450, 400, 1),
+            Vector3(400, 350, 1)];
+        this.slide3transform = new Matrix(3, 3);
+        this.slide3rotate = new Matrix(3,3);
     }
 
     //This helper function creates a ball
@@ -103,12 +134,24 @@ class Renderer {
     //
     updateTransforms(time, delta_time) {
         // TODO: update any transformations needed for animation
-
         //Set up translation matrix for slide 0
         mat3x3Translate(this.slide0transform, this.ballVelocity.x*delta_time, this.ballVelocity.y*delta_time);
+        //Set up rotate matrix for slide 1
         mat3x3Rotate(this.square_rotate, 10*(delta_time/100));
         //mat3x3Rotate(this.pentagon_rotate, 20*(delta_time/100));
+        mat3x3Rotate(this.pentagon_rotate, 20*(delta_time/100));
+        mat3x3Rotate(this.square_rotate, -10*(delta_time/100));
+        mat3x3Rotate(this.pentagon_rotate, 60*(delta_time/100));
+        mat3x3Rotate(this.hexagon_rotate, -30*(delta_time/100));
+        
+        //Slide 2
+        mat3x3Scale(this.triangle_scale, this.scalar, this.scalar);
 
+
+
+        //Slide 3
+        mat3x3Rotate(this.slide3rotate, 10*(delta_time/100));
+        mat3x3Translate(this.slide3transform, this.funVelocity.x*delta_time, this.funVelocity.y*delta_time);
     }
     
     //
@@ -218,11 +261,12 @@ class Renderer {
         //this.drawConvexPolygon(square, [255, 0, 0, 255]);
         //console.log("hello");
         
-        let teal = [0, 128, 128, 255];
+        let teal = [0, 128, 128, 255];  
         let red = [255, 0, 0, 255];
         
         this.drawConvexPolygon(this.pentagon, red);
         
+        let green = [0, 255, 0, 255];
         let square_origin = new Matrix(3, 3);
         let square_return = new Matrix(3, 3);
         let square_mult1 = new Matrix(3, 3);
@@ -236,22 +280,34 @@ class Renderer {
         }
         
         this.drawConvexPolygon(this.square, teal);
-        /*
+        
         let pentagon_origin = new Matrix(3, 3);
         let pentagon_return = new Matrix(3, 3);
         let pentagon_mult1 = new Matrix(3, 3);
         let pentagon_mult2 = new Matrix(3, 3);  
-        mat3x3Translate(pentagon_return, 500, 450);
-        mat3x3Translate(pentagon_origin, -500, -450);
+        mat3x3Translate(pentagon_return, 450, 350);
+        mat3x3Translate(pentagon_origin, -450, -350);
         pentagon_mult1 = Matrix.multiply([pentagon_return, this.pentagon_rotate]);
         pentagon_mult2 = Matrix.multiply([pentagon_mult1, pentagon_origin]);
         for(let j = 0; j < this.pentagon.length; j++) {
             this.pentagon[j] = Matrix.multiply([pentagon_mult2, this.pentagon[j]]);
         }
+        
         this.drawConvexPolygon(this.pentagon, red);
-        */
+
+        let hexagon_origin = new Matrix(3, 3);
+        let hexagon_return = new Matrix(3, 3);
+        let hexagon_mult1 = new Matrix(3, 3);
+        let hexagon_mult2 = new Matrix(3, 3);  
+        mat3x3Translate(hexagon_return, 650, 200);
+        mat3x3Translate(hexagon_origin, -650, -200);
+        hexagon_mult1 = Matrix.multiply([hexagon_return, this.hexagon_rotate]);
+        hexagon_mult2 = Matrix.multiply([hexagon_mult1, hexagon_origin]);
+        for(let j = 0; j < this.hexagon.length; j++) {
+            this.hexagon[j] = Matrix.multiply([hexagon_mult2, this.hexagon[j]]);
+        }
         
-        
+        this.drawConvexPolygon(this.hexagon, green);
         
     }
 
@@ -260,7 +316,41 @@ class Renderer {
         // TODO: draw at least 2 polygons grow and shrink about their own centers
         //   - have each polygon grow / shrink different sizes
         //   - try at least 1 polygon that grows / shrinks non-uniformly in the x and y directions
+        //this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);
 
+        let triangle_origin = new Matrix(3, 3);
+        mat3x3Translate(triangle_origin, -400, -250);
+        let triangle_return = new Matrix(3, 3);
+        mat3x3Translate(triangle_return, 400, 250);
+        let triangle_mult1 = new Matrix(3, 3);
+        let triangle_mult2 = new Matrix(3, 3);
+        triangle_mult1 = Matrix.multiply([triangle_return, this.triangle_scale]);
+        triangle_mult2 = Matrix.multiply([triangle_mult1, triangle_origin]);
+        for(let i = 0; i < this.triangle.length; i++) {
+            this.triangle[i] = Matrix.multiply(([triangle_mult2, this.triangle[i]]));
+        }
+        console.log(this.triangle[2].values[1]);
+        let temp = 0;
+        /*
+        if(temp == 0) {
+            while(this.triangle[2].values[1] < 700) {
+                this.scalar = 1.2;
+                this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);
+            } 
+            temp = 1;
+        }
+        else if(temp == 1){
+            while(this.triangle[2].values[1] > 300) {
+                this.scalar = 0.8;
+                this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);
+            } 
+            temp = 0;
+        }
+        */
+        
+
+        //this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);
+        
 
     }
 
@@ -270,7 +360,90 @@ class Renderer {
         //   - animation should involve all three basic transformation types
         //     (translation, scaling, and rotation)
         
+        //Set teal color code
+        let teal = [0, 128, 128, 255];
+
+        /*
+        this.fun = [Vector3(400, 300, 1),
+            Vector3(500, 300, 1),
+            Vector3(500, 350, 1),
+            Vector3(450, 400, 1),
+            Vector3(400, 350, 1)];
+        */
         
+        let fun_origin = new Matrix(3, 3);
+        let fun_return = new Matrix(3, 3);
+        let fun_mult1 = new Matrix(3, 3);
+        let fun_mult2 = new Matrix(3, 3);
+        xcenter = 
+        ycenter = 
+        mat3x3Translate(fun_return, 650, 200);
+        mat3x3Translate(fun_origin, -650, -200);
+        fun_mult1 = Matrix.multiply([fun_return, this.slide3rotate]);
+        fun_mult2 = Matrix.multiply([fun_mult1, fun_origin]);
+        for(let j = 0; j < this.fun.length; j++) {
+            this.fun[j] = Matrix.multiply([fun_mult2, this.fun[j]]);
+        }
+        
+        let translate = this.slide3transform;
+        let polySize = this.fun.length;
+        let i;
+        //Transform the all points
+        for (i = 0; i < polySize; i++)
+        {
+            this.fun[i] = Matrix.multiply([translate, this.fun[i]]);
+        }
+        let xdisp, ydisp, xt,yt;
+        for (i = 0; i < polySize; i++)
+        {
+            xt = 0;
+            yt = 0;
+            xdisp = this.fun[i].values[0];
+            //Bounce off sides
+            if (xdisp <= 0 || xdisp >= this.canvas.width)
+            {
+                //invert the x velocity
+                this.funVelocity.x = this.funVelocity.x * -1;
+                if (xdisp < 0)
+                {
+                    xt = -xdisp*2;
+                }
+                else if (xdisp > this.canvas.width)
+                {
+                    xt = -(xdisp - this.canvas.width)*2;
+                }
+            }
+            ydisp = this.fun[i].values[1];
+            //Bounce off top/bottom
+            if (ydisp <= 0 || ydisp >= this.canvas.height)
+            {
+                //invert the y velocity
+                this.funVelocity.y = this.funVelocity.y * -1;
+                if (ydisp < 0)
+                {
+                    yt = -ydisp*2;
+                }
+                else if (ydisp > this.canvas.height)
+                {
+                    yt = -(ydisp - this.canvas.height)*2;
+                }
+            }
+            this.movefun(xt,yt);
+        }
+
+        this.drawConvexPolygon(this.fun, teal);
+    }
+
+    movefun(x,y)
+    {
+        let polySize = this.fun.length;
+        let i;
+        let t = new Matrix(3, 3);
+        mat3x3Translate(t, x, y);
+        for (i = 0; i < polySize; i++)
+        {
+            this.fun[i] = Matrix.multiply([t, this.fun[i]]);
+        }
     }
     
     // vertex_list:  array of object [Matrix(3, 1), Matrix(3, 1), ..., Matrix(3, 1)]
