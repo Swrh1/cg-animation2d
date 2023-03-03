@@ -17,14 +17,26 @@ class Renderer {
                        Vector3(300, 100, 1),
                        Vector3(300, 300, 1),
                        Vector3(100, 300, 1)];
-        this.square_rotate = new Matrix(3, 3);
 
-        this.pentagon = [Vector3(400, 300),
-                         Vector3(600, 300),
-                         Vector3(600, 500),
-                         Vector3(500, 600),
-                         Vector3(400, 500)];
+        
+        this.square_rotate = new Matrix(3, 3);
+        
+        this.pentagon = [Vector3(400, 300, 1),
+                         Vector3(500, 300, 1),
+                         Vector3(500, 350, 1),
+                         Vector3(450, 400, 1),
+                         Vector3(400, 350, 1)];
+                           
         this.pentagon_rotate = new Matrix(3, 3);
+
+        this.hexagon = [Vector3(600, 100, 1),
+                        Vector3(700, 100, 1),
+                        Vector3(750, 200, 1),
+                        Vector3(700, 300, 1),
+                        Vector3(600, 300, 1),
+                        Vector3(550, 200, 1)];
+
+        this.hexagon_rotate = new Matrix(3, 3);
 
         this.ballVelocity = {x: 1, y: 1};
         this.ball = [];
@@ -110,16 +122,20 @@ class Renderer {
     //
     updateTransforms(time, delta_time) {
         // TODO: update any transformations needed for animation
-
         //Set up translation matrix for slide 0
         mat3x3Translate(this.slide0transform, this.ballVelocity.x*delta_time, this.ballVelocity.y*delta_time);
         //Set up rotate matrix for slide 1
         mat3x3Rotate(this.square_rotate, 10*(delta_time/100));
         mat3x3Rotate(this.pentagon_rotate, 20*(delta_time/100));
+        mat3x3Rotate(this.square_rotate, -10*(delta_time/100));
+        mat3x3Rotate(this.pentagon_rotate, 60*(delta_time/100));
+        mat3x3Rotate(this.hexagon_rotate, -30*(delta_time/100));
         //Slide 2
 
         //Slide 3
         mat3x3Translate(this.slide3transform, this.funVelocity.x*delta_time, this.funVelocity.y*delta_time);
+        
+
 
     }
     
@@ -230,9 +246,9 @@ class Renderer {
         //this.drawConvexPolygon(square, [255, 0, 0, 255]);
         //console.log("hello");
         
-        let teal = [0, 128, 128, 255];
+        let teal = [0, 128, 128, 255];  
         let red = [255, 0, 0, 255];
-        //this.drawConvexPolygon(this.pentagon, red);
+        let green = [0, 255, 0, 255];
         let square_origin = new Matrix(3, 3);
         let square_return = new Matrix(3, 3);
         let square_mult1 = new Matrix(3, 3);
@@ -245,20 +261,35 @@ class Renderer {
             this.square[i] = Matrix.multiply([square_mult2, this.square[i]]);
         }
         this.drawConvexPolygon(this.square, teal);
-        /*
+        
         let pentagon_origin = new Matrix(3, 3);
         let pentagon_return = new Matrix(3, 3);
         let pentagon_mult1 = new Matrix(3, 3);
         let pentagon_mult2 = new Matrix(3, 3);  
-        mat3x3Translate(pentagon_return, 500, 450);
-        mat3x3Translate(pentagon_origin, -500, -450);
+        mat3x3Translate(pentagon_return, 450, 350);
+        mat3x3Translate(pentagon_origin, -450, -350);
         pentagon_mult1 = Matrix.multiply([pentagon_return, this.pentagon_rotate]);
         pentagon_mult2 = Matrix.multiply([pentagon_mult1, pentagon_origin]);
         for(let j = 0; j < this.pentagon.length; j++) {
             this.pentagon[j] = Matrix.multiply([pentagon_mult2, this.pentagon[j]]);
         }
+        
         this.drawConvexPolygon(this.pentagon, red);
-        */
+
+        let hexagon_origin = new Matrix(3, 3);
+        let hexagon_return = new Matrix(3, 3);
+        let hexagon_mult1 = new Matrix(3, 3);
+        let hexagon_mult2 = new Matrix(3, 3);  
+        mat3x3Translate(hexagon_return, 650, 200);
+        mat3x3Translate(hexagon_origin, -650, -200);
+        hexagon_mult1 = Matrix.multiply([hexagon_return, this.hexagon_rotate]);
+        hexagon_mult2 = Matrix.multiply([hexagon_mult1, hexagon_origin]);
+        for(let j = 0; j < this.hexagon.length; j++) {
+            this.hexagon[j] = Matrix.multiply([hexagon_mult2, this.hexagon[j]]);
+        }
+        
+        this.drawConvexPolygon(this.hexagon, green);
+        
         
         
         
