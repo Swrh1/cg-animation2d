@@ -38,6 +38,12 @@ class Renderer {
 
         this.hexagon_rotate = new Matrix(3, 3);
 
+        this.triangle = [Vector3(300, 200, 1),
+                         Vector3(500, 200, 1),
+                         Vector3(400, 300, 1)];
+        this.triangle_scale = new Matrix(3, 3);
+        this.scalar = 1.2;
+
         this.ballVelocity = {x: 1, y: 1};
         this.ball = [];
         this.slide0transform = new Matrix(3, 3);
@@ -120,6 +126,9 @@ class Renderer {
         mat3x3Rotate(this.square_rotate, -10*(delta_time/100));
         mat3x3Rotate(this.pentagon_rotate, 60*(delta_time/100));
         mat3x3Rotate(this.hexagon_rotate, -30*(delta_time/100));
+
+        mat3x3Scale(this.triangle_scale, this.scalar, this.scalar);
+
 
 
     }
@@ -275,9 +284,6 @@ class Renderer {
         
         this.drawConvexPolygon(this.hexagon, green);
         
-        
-        
-        
     }
 
     //
@@ -285,7 +291,39 @@ class Renderer {
         // TODO: draw at least 2 polygons grow and shrink about their own centers
         //   - have each polygon grow / shrink different sizes
         //   - try at least 1 polygon that grows / shrinks non-uniformly in the x and y directions
+        //this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);
 
+        let triangle_origin = new Matrix(3, 3);
+        mat3x3Translate(triangle_origin, -400, -250);
+        let triangle_return = new Matrix(3, 3);
+        mat3x3Translate(triangle_return, 400, 250);
+        let triangle_mult1 = new Matrix(3, 3);
+        let triangle_mult2 = new Matrix(3, 3);
+        triangle_mult1 = Matrix.multiply([triangle_return, this.triangle_scale]);
+        triangle_mult2 = Matrix.multiply([triangle_mult1, triangle_origin]);
+        for(let i = 0; i < this.triangle.length; i++) {
+            this.triangle[i] = Matrix.multiply(([triangle_mult2, this.triangle[i]]));
+        }
+        console.log(this.triangle[2].values[1]);
+        let temp = 0;
+        if(temp == 0) {
+            while(this.triangle[2].values[1] < 700) {
+                this.scalar = 1.2;
+                this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);
+            } 
+            temp = 1;
+        }
+        else if(temp == 1){
+            while(this.triangle[2].values[1] > 300) {
+                this.scalar = 0.8;
+                this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);
+            } 
+            temp = 0;
+        }
+        
+
+        //this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);
+        
 
     }
 
