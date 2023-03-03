@@ -306,6 +306,7 @@ class Renderer {
         }
         console.log(this.triangle[2].values[1]);
         let temp = 0;
+        /*
         if(temp == 0) {
             while(this.triangle[2].values[1] < 700) {
                 this.scalar = 1.2;
@@ -320,6 +321,7 @@ class Renderer {
             } 
             temp = 0;
         }
+        */
         
 
         //this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);
