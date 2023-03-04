@@ -49,7 +49,7 @@ class Renderer {
         this.slide0transform = new Matrix(3, 3);
         this.createBall(this.ball);
 
-        this.funVelocity = {x: 1, y: 1};
+        this.funVelocity = {x: 0.5, y: 0.5};
         this.fun = [Vector3(400, 300, 1),
             Vector3(500, 300, 1),
             Vector3(500, 350, 1),
@@ -57,6 +57,7 @@ class Renderer {
             Vector3(400, 350, 1)];
         this.slide3transform = new Matrix(3, 3);
         this.slide3rotate = new Matrix(3,3);
+        this.funRotateSpeed = 50;
     }
 
     //This helper function creates a ball
@@ -144,7 +145,7 @@ class Renderer {
 
 
         //Slide 3
-        mat3x3Rotate(this.slide3rotate, 30*(delta_time/100));
+        mat3x3Rotate(this.slide3rotate, this.funRotateSpeed*(delta_time/100));
         mat3x3Translate(this.slide3transform, this.funVelocity.x*delta_time, this.funVelocity.y*delta_time);
     }
     
@@ -394,6 +395,7 @@ class Renderer {
             //Bounce off sides
             if (xdisp <= 0 || xdisp >= this.canvas.width)
             {
+                this.funRotateSpeed *= -1;
                 //invert the x velocity
                 this.funVelocity.x = this.funVelocity.x * -1;
                 if (xdisp < 0)
@@ -409,6 +411,7 @@ class Renderer {
             //Bounce off top/bottom
             if (ydisp <= 0 || ydisp >= this.canvas.height)
             {
+                this.funRotateSpeed *= -1;
                 //invert the y velocity
                 this.funVelocity.y = this.funVelocity.y * -1;
                 if (ydisp < 0)
