@@ -144,7 +144,7 @@ class Renderer {
 
 
         //Slide 3
-        mat3x3Rotate(this.slide3rotate, 10*(delta_time/100));
+        mat3x3Rotate(this.slide3rotate, 30*(delta_time/100));
         mat3x3Translate(this.slide3transform, this.funVelocity.x*delta_time, this.funVelocity.y*delta_time);
     }
     
@@ -352,26 +352,28 @@ class Renderer {
         
         //Set teal color code
         let teal = [0, 128, 128, 255];
-
-        /*
-        this.fun = [Vector3(400, 300, 1),
-            Vector3(500, 300, 1),
-            Vector3(500, 350, 1),
-            Vector3(450, 400, 1),
-            Vector3(400, 350, 1)];
-        */
         
         let fun_origin = new Matrix(3, 3);
         let fun_return = new Matrix(3, 3);
         let fun_mult1 = new Matrix(3, 3);
         let fun_mult2 = new Matrix(3, 3);
-        xcenter = 
-        ycenter = 
-        mat3x3Translate(fun_return, 650, 200);
-        mat3x3Translate(fun_origin, -650, -200);
+        let xvals = [];
+        let yvals = [];
+        let j;
+        
+        for(j = 0; j < this.fun.length; j++) {
+            xvals.push(this.fun[j].values[0]);
+            yvals.push(this.fun[j].values[1]);
+        }
+        let xcenter = Math.round((Math.min(...xvals)+Math.max(...xvals))/2);
+        let ycenter = Math.round((Math.min(...yvals)+Math.max(...yvals))/2);
+        
+        mat3x3Translate(fun_return, xcenter, ycenter);
+        mat3x3Translate(fun_origin, -xcenter, -ycenter);
+
         fun_mult1 = Matrix.multiply([fun_return, this.slide3rotate]);
         fun_mult2 = Matrix.multiply([fun_mult1, fun_origin]);
-        for(let j = 0; j < this.fun.length; j++) {
+        for(j = 0; j < this.fun.length; j++) {
             this.fun[j] = Matrix.multiply([fun_mult2, this.fun[j]]);
         }
         
