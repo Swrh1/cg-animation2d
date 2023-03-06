@@ -306,22 +306,40 @@ class Renderer {
         }
         console.log(this.triangle[2].values[1]);
         let temp = 0;
-        /*
+        
         if(temp == 0) {
+            if(this.triangle[2].values[1] < 700) {
+                this.scalar = 1.2;
+                this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);
+            }
+            else {
+                temp = 1;
+            }
+            /*
             while(this.triangle[2].values[1] < 700) {
                 this.scalar = 1.2;
                 this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);
             } 
             temp = 1;
+            */
         }
         else if(temp == 1){
+            if(this.triangle[2].values[1] > 300) {
+                this.scalar = 0.8;
+                this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);
+            }
+            else {
+                temp = 0;
+            }
+            /*
             while(this.triangle[2].values[1] > 300) {
                 this.scalar = 0.8;
                 this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);
             } 
             temp = 0;
+            */
         }
-        */
+        
         
 
         //this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);
