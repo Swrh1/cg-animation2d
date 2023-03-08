@@ -47,7 +47,9 @@ class Renderer {
                          Vector3(500, 200, 1),
                          Vector3(400, 300, 1)];
         this.triangle_scale = new Matrix(3, 3);
-        this.scalar = 1.2;
+
+        this.scalar = 1.05;
+        this.temp = 0;
 
         this.ballVelocity = {x: 1, y: 1};
         this.ball = [];
@@ -145,7 +147,14 @@ class Renderer {
         mat3x3Rotate(this.hexagon_rotate, -30*(delta_time/100));
         
         //Slide 2
-        mat3x3Scale(this.triangle_scale, this.scalar, this.scalar);
+        if(this.scalar > 1) {
+            mat3x3Scale(this.triangle_scale, this.scalar + (delta_time/800), this.scalar + (delta_time/800));
+        }
+        else {
+            mat3x3Scale(this.triangle_scale, this.scalar - (delta_time/800), this.scalar - (delta_time/800));
+
+        }
+        //mat3x3Scale(this.triangle_scale_shrink, this.scalar_shrink, this.scalar_shrink);
 
 
 
@@ -324,29 +333,60 @@ class Renderer {
         mat3x3Translate(triangle_return, 400, 250);
         let triangle_mult1 = new Matrix(3, 3);
         let triangle_mult2 = new Matrix(3, 3);
-        triangle_mult1 = Matrix.multiply([triangle_return, this.triangle_scale]);
-        triangle_mult2 = Matrix.multiply([triangle_mult1, triangle_origin]);
-        for(let i = 0; i < this.triangle.length; i++) {
-            this.triangle[i] = Matrix.multiply(([triangle_mult2, this.triangle[i]]));
+        //console.log(this.triangle[2].values[1]);
+        if(this.temp = 0) {
+            this.scalar = 1.05;
+            if(this.triangle[2].values[1] * this.scalar > 500) {
+                this.temp = 1;
+            }
+            else {
+                triangle_mult1 = Matrix.multiply([triangle_return, this.triangle_scale]);
+                triangle_mult2 = Matrix.multiply([triangle_mult1, triangle_origin]);
+                for(let i = 0; i < this.triangle.length; i++) {
+                    this.triangle[i] = Matrix.multiply(([triangle_mult2, this.triangle[i]]));
+                }
+                this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);
+            }
         }
-        console.log(this.triangle[2].values[1]);
-        let temp = 0;
+        else if(this.temp = 1) {
+            this.scalar = 0.95;
+            if(this.triangle[2].values[1] * this.scalar < 300) {
+                this.temp = 0;
+            }
+            else {triangle_mult1 = Matrix.multiply([triangle_return, this.triangle_scale]);
+                triangle_mult2 = Matrix.multiply([triangle_mult1, triangle_origin]);
+                for(let i = 0; i < this.triangle.length; i++) {
+                    this.triangle[i] = Matrix.multiply(([triangle_mult2, this.triangle[i]]));
+                }
+                this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);
+            }
+        }
+        
         /*
-        if(temp == 0) {
-            while(this.triangle[2].values[1] < 700) {
-                this.scalar = 1.2;
-                this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);
-            } 
-            temp = 1;
+        if(this.triangle[2].values[1] < 700) {
+            triangle_mult1 = Matrix.multiply([triangle_return, this.triangle_scale]);
+            triangle_mult2 = Matrix.multiply([triangle_mult1, triangle_origin]);
+            for(let i = 0; i < this.triangle.length; i++) {
+                this.triangle[i] = Matrix.multiply(([triangle_mult2, this.triangle[i]]));
+            }
+            this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);  
         }
-        else if(temp == 1){
-            while(this.triangle[2].values[1] > 300) {
-                this.scalar = 0.8;
-                this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);
-            } 
-            temp = 0;
+        else if(this.triangle[2].values[1] > 300 && this.scalar == 0.8){
+            this.scalar = 0.8;
+            triangle_mult1 = Matrix.multiply([triangle_return, this.triangle_scale]);
+            triangle_mult2 = Matrix.multiply([triangle_mult1, triangle_origin]);
+            for(let i = 0; i < this.triangle.length; i++) {
+                this.triangle[i] = Matrix.multiply(([triangle_mult2, this.triangle[i]]));
+            }
+            this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);
+    
+        }
+        else {
+            this.scalar = 1.2
         }
         */
+        
+        
         
 
         //this.drawConvexPolygon(this.triangle, [0, 0, 255, 255]);
