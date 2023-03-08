@@ -58,8 +58,14 @@ class Renderer {
             Vector3(450, 400, 1),
             Vector3(400, 350, 1)];
         this.slide3transform = new Matrix(3, 3);
+
         this.slide3rotate = new Matrix(3,3);
         this.funRotateSpeed = 50;
+
+        this.fun_scale = new Matrix(3, 3);
+        this.funscalar = 1.05;
+        this.fungrow = true;
+        this.funshrink = false;
     }
 
     //This helper function creates a ball
@@ -154,6 +160,12 @@ class Renderer {
 
         //Slide 3
         mat3x3Rotate(this.slide3rotate, this.funRotateSpeed*(delta_time/100));
+        if(this.fungrow == true) {
+            mat3x3Scale(this.fun_scale, this.funscalar + (delta_time/500), this.funscalar + (delta_time/500));
+        }
+        else {
+            mat3x3Scale(this.fun_scale, this.funscalar - (delta_time/500), this.funscalar - (delta_time/500));
+        }
         mat3x3Translate(this.slide3transform, this.funVelocity.x*delta_time, this.funVelocity.y*delta_time);
     }
     
@@ -370,6 +382,7 @@ class Renderer {
         //Set teal color code
         let teal = [0, 128, 128, 255];
         
+        /** Rotation Section */
         let fun_origin = new Matrix(3, 3);
         let fun_return = new Matrix(3, 3);
         let fun_mult1 = new Matrix(3, 3);
@@ -393,6 +406,43 @@ class Renderer {
         for(j = 0; j < this.fun.length; j++) {
             this.fun[j] = Matrix.multiply([fun_mult2, this.fun[j]]);
         }
+
+        /** Scaling Section */
+        /*
+        let triangle_origin = new Matrix(3, 3);
+        mat3x3Translate(triangle_origin, -400, -250);
+        let triangle_return = new Matrix(3, 3);
+        mat3x3Translate(triangle_return, 400, 250);
+        let triangle_mult1 = new Matrix(3, 3);
+        let triangle_mult2 = new Matrix(3, 3);
+        //console.log(this.triangle[2].values[1]);
+        if(this.fun[2].values[1] > 400 && this.fungrow == true) {
+            this.fungrow = false;
+            this.funshrink = true;
+            this.funscalar = 0.95;
+        }
+        if(this.fun[2].values[1] < 300 && this.funshrink == false) {
+            this.fungrow = true;
+            this.funshrink = false;
+            this.funscalar = 1.05;
+        }
+        if(this.fungrow == true) {
+            fun_mult1 = Matrix.multiply([fun_return, this.fun_scale]);
+            fun_mult2 = Matrix.multiply([fun_mult1, fun_origin]);
+            for(let i = 0; i < this.fun.length; i++) {
+                this.fun[i] = Matrix.multiply(([fun_mult2, this.fun[i]]));
+            }
+        }
+        else if(this.funshrink == false) {
+            fun_mult1 = Matrix.multiply([fun_return, this.fun_scale]);
+            fun_mult2 = Matrix.multiply([fun_mult1, fun_origin]);
+            for(let i = 0; i < this.fun.length; i++) {
+                this.fun[i] = Matrix.multiply(([fun_mult2, this.fun[i]]));
+            }
+        }
+        */
+
+        /** Translation Section */
         
         let translate = this.slide3transform;
         let polySize = this.fun.length;
@@ -441,6 +491,7 @@ class Renderer {
             }
             this.movefun(xt,yt);
         }
+        
 
         this.drawConvexPolygon(this.fun, teal);
     }
