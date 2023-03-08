@@ -306,7 +306,7 @@ class Renderer {
         let teal = [0, 128, 128, 255];  
         let red = [255, 0, 0, 255];
         
-        this.drawConvexPolygon(this.pentagon, red);
+        //this.drawConvexPolygon(this.pentagon, red);
         
         let green = [0, 255, 0, 255];
         let square_origin = new Matrix(3, 3);
